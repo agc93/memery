@@ -1,0 +1,10 @@
+.container.mat-typography.mat-app-background(fxLayout='column' fxLayout.xs='column' fxLayoutAlign='center', fxLayoutGap='20px', fxLayoutGap.xs='0')
+    .item.header
+        header
+    .item.main(fxLayout)
+        .item.nav-menu(fxFlex='15%' fxShow="false" fxShow.gt-md)
+            nav-menu
+        .item.content(fxFlex)
+            router-outlet
+    .item.footer
+        footer

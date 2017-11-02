@@ -1,0 +1,78 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: memery-cli
+  annotations:
+    description: >- 
+      This template can be used to quickly deploy a download server for the Memery CLI,
+      powered by Downlink.
+    template.openshift.io/long-description: >-
+      This template can be used to quickly deploy a download server for the Memery CLI,
+      powered by Downlink.
+    template.openshift.io/provider-display-name: "Alistair Chapman"
+    template.openshift.io/documentation-url: 'https://github.com/agc93/memery/blob/master/README.md'
+    openshift.io/display-name: "Memery CLI"
+    iconClass: "icon-beaker"
+    tags: ""
+labels:
+  template: "memery-cli-openshift"
+objects:
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: memery-cli
+  spec:
+    replicas: 1
+    selector:
+      app: memery-cli
+    template:
+      metadata:
+        labels:
+          app: memery-cli
+      spec:
+        containers:
+        - image: memery-dl:latest
+          name: memery-dl
+          ports:
+          - containerPort: 4000
+          resources:
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /latest/openshift
+              port: 4000
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          imagePullPolicy: Always
+        restartPolicy: Always
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - memery-dl
+        from:
+          kind: ImageStreamTag
+          name: memery-dl:latest
+      type: ImageChange
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: memery-dl
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: agc93/memery-dl:latest
+      name: latest
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: memery-dl
+  spec:
+    ports:
+    - name: "http"
+      port: 4000
+      targetPort: 4000
+    selector:
+      app: memery-cli

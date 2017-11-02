@@ -1,0 +1,7 @@
+FROM agc93/downlink:unstable
+ARG version=latest
+COPY ./archive/ /pkg/${version}/server/x64/
+COPY ./packages/ /pkg/${version}/rpm/x64/
+COPY ./openshift.yaml /pkg/${version}/openshift/any/
+ENV DOWNLINK__LocalStorage__PackageRoot=/pkg/ DOWNLINK__Storage=Local ASPNETCORE_URLS="http://*:4000"
+EXPOSE 4000

@@ -1,0 +1,114 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: memery
+  annotations:
+    description: >- 
+      This template can be used to quickly deploy an instance of Memery, the 
+      over-engineered answer to IRC's lack of meme support.
+    template.openshift.io/long-description: >-
+      This template can be used to quickly deploy an instance of Memery, the 
+      over-engineered answer to IRC's lack of meme support.
+    template.openshift.io/provider-display-name: "Alistair Chapman"
+    template.openshift.io/documentation-url: 'https://github.com/agc93/memery/blob/master/README.md'
+    openshift.io/display-name: "Memery"
+    iconClass: "icon-beaker"
+    tags: "database"
+labels:
+  template: "memery-openshift"
+objects:
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: memery
+  spec:
+    replicas: 1
+    selector:
+      app: memery
+    template:
+      metadata:
+        labels:
+          app: memery
+      spec:
+        containers:
+        - image: memery:latest
+          name: memery
+          volumeMounts:
+          - mountPath: /app/images
+            name: memery-images
+          ports:
+          - containerPort: 5000
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          imagePullPolicy: Always
+        restartPolicy: Always
+        volumes:
+        - name: memery-images
+          persistentVolumeClaim:
+            claimName: "memery-data"
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - memery
+        from:
+          kind: ImageStreamTag
+          name: memery:latest
+      type: ImageChange
+- kind: ImageStream
+  apiVersion: v1
+  metadata:
+    name: memery
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: agc93/memery:latest
+      name: latest
+- kind: Service
+  apiVersion: v1
+  metadata:
+    name: memery
+  spec:
+    ports:
+    - name: "http"
+      port: 80
+      targetPort: 5000
+    selector:
+      app: memery
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: memery
+  spec:
+    host: ${HOST}
+    port:
+      targetPort: http
+    to:
+      kind: Service
+      name: memery
+      weight: 100
+- kind: "PersistentVolumeClaim"
+  apiVersion: "v1"
+  metadata:
+    name: "memery-data"
+  spec:
+    accessModes:
+      - "ReadWriteMany"
+    resources:
+      requests:
+        storage: "128Mi"
+parameters:
+  - name: HOST
+    displayName: Route hostname
+    description: The host name for the service route to listen on
+    value: ''
