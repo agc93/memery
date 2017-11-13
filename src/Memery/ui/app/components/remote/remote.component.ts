@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material';
 import { Http, Response, URLSearchParams } from '@angular/http';
 import { ImageRef } from './../../services/imageRef';
 import { Component, Inject, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
@@ -17,7 +18,8 @@ export class UploadRemoteComponent {
 
     constructor(
         private _http: Http,
-        @Inject('BASE_URL') private originUrl: string
+        @Inject('BASE_URL') private originUrl: string,
+        private _snackBar: MatSnackBar
     ) { }
 
     get url(): string {
@@ -71,8 +73,10 @@ export class UploadRemoteComponent {
         var value = response.json();
         console.debug(`response: ${value}`);
         this.response = value;
+        this._snackBar.open('Image uploaded!', 'Dismiss', { duration: 2000 });
         this.onUpload.next();
         this.isLoading = false;
+        this.url = '';
     }
 
     private getFilename(url: string) {
@@ -83,5 +87,12 @@ export class UploadRemoteComponent {
             }
         }
         return ''
+    }
+
+    private reset(): void {
+        this.name = '';
+        this.url = '';
+        this.onUpload.next();
+        this.isLoading = false;
     }
 }

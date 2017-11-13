@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material';
 import { BaseComponent } from './../base.component';
 import { Http, Response } from '@angular/http';
 import { Component, Inject, Output, EventEmitter } from '@angular/core';
@@ -21,7 +22,8 @@ export class UploadComponent extends BaseComponent {
     constructor(
         private fb: FormBuilder,
         private _http: Http,
-        @Inject('BASE_URL') private originUrl: string
+        @Inject('BASE_URL') private originUrl: string,
+        private _snackBar: MatSnackBar
     ) {
         super();
         this.createForms();
@@ -83,6 +85,7 @@ export class UploadComponent extends BaseComponent {
         this.code = value.id;
         console.debug(`uploaded response parsed`);
         this.onUpload.next();
+        this._snackBar.open('Image uploaded!', 'Dismiss', { duration: 2000 });
         this.isLoading = false;
     }
 

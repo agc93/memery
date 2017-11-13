@@ -80,7 +80,7 @@ namespace Memery.Services
                 ? new FileInfo(Path.Combine(RootPath.FullName, fileName))
                 : new FileInfo(Path.Combine(
                     RootPath.FullName,
-                    $"{Path.GetFileNameWithoutExtension(fileName)}.{DateTime.Now.Ticks}.{Path.GetExtension(fileName)}"));
+                    $"{Path.GetFileNameWithoutExtension(fileName)}.{DateTime.Now.Ticks}{Path.GetExtension(fileName)}"));
         }
 
         private bool IsValid(string fileName)
