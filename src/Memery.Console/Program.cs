@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Spectre.CommandLine;
+using Spectre.CommandLine.Extensions.DependencyInjection;
 using static System.Console;
 
 namespace Memery.Console
@@ -13,10 +14,9 @@ namespace Memery.Console
         static int Main(string[] args)
         {
             var services = BuildServices().AddConfiguration();
-            var app = new CommandApp(new DependencyInjectionResolver(services));
+            var app = new CommandApp(new DependencyInjectionRegistrar(services));
             app.Configure(config => {
                 config.SetApplicationName("Memery CLI");
-                config.SetHelpOption("--help");
                 config.AddCommand<Commands.UploadCommand>("upload");
                 config.AddCommand<Commands.AddRemoteImageCommand>("add-image");
                 config.AddCommand<Commands.ListCommand>("list");
@@ -27,12 +27,12 @@ namespace Memery.Console
 
         private static IServiceCollection BuildServices() {
             var services = new ServiceCollection();
-            services.Scan(scan => {
-                scan.FromAssemblyOf<Program>()
-                    .AddClasses(classes => classes.AssignableTo(typeof(Command<>)))
-                    .AsSelf()
-                    .WithTransientLifetime();
-            });
+            // services.Scan(scan => {
+            //     scan.FromAssemblyOf<Program>()
+            //         .AddClasses(classes => classes.AssignableTo(typeof(Command<>)))
+            //         .AsSelf()
+            //         .WithTransientLifetime();
+            // });
             services.AddSingleton<System.Net.Http.HttpMessageHandler>(MemeryClient.GetHandler);
             services.AddTransient<MemeryClient>();
             return services;

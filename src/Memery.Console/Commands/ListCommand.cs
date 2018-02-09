@@ -2,7 +2,6 @@ using System.ComponentModel;
 using static System.Console;
 using Spectre.CommandLine;
 using Memery.Console.Formatting;
-using Spectre.CommandLine.Annotations;
 using System.Linq;
 
 namespace Memery.Console.Commands
@@ -17,7 +16,7 @@ namespace Memery.Console.Commands
             _client = client;
         }
 
-        public override int Run(Settings settings)
+        public override int Execute(Settings settings, ILookup<string, string> unmapped)
         {
             var index = _client.GetImages().Result;
             var table = new ConsoleTable("ID", "Name", "File Name");
@@ -31,7 +30,7 @@ namespace Memery.Console.Commands
 
         public class Settings
         {
-            [Option("-u|--url")]
+            [CommandOption("-u|--url")]
             [Description("Outputs full URLs rather than just the path fragments.")]
             public bool LinkOutput { get; set; }
         }

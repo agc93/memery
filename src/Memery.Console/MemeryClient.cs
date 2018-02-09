@@ -44,13 +44,6 @@ namespace Memery.Console
             }
         }
 
-        internal static MemeryClient GetInsecureClient(IOptions<MemeryConsoleOptions> opts)
-        {
-            return new MemeryClient(opts, new HttpClientHandler() {
-                ServerCertificateCustomValidationCallback = (msg, cert, chain, err) => true
-            });
-        }
-
         internal static HttpMessageHandler GetHandler(System.IServiceProvider provider) {
             var opts = provider.GetService<IOptions<MemeryConsoleOptions>>();
             if (opts.Value.DisableSSLVerification) {

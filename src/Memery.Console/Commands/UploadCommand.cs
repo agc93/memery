@@ -1,6 +1,5 @@
 using Spectre.CommandLine;
 using System.Net.Http;
-using Spectre.CommandLine.Annotations;
 using System.IO;
 using static System.Console;
 using System.ComponentModel;
@@ -16,7 +15,7 @@ namespace Memery.Console.Commands
             _client = client;
         }
 
-        public override int Run(Settings settings)
+        public override int Execute(Settings settings, System.Linq.ILookup<string, string> unmapped)
         {
             var file = new FileInfo(settings.FilePath);
             if (!file.Exists) {
@@ -35,9 +34,9 @@ namespace Memery.Console.Commands
         }
 
         public class Settings {
-            [Argument(0, "<image>")]
+            [CommandArgument(0, "<image>")]
             public string FilePath {get;set;}
-            [Option("-n|--name")]
+            [CommandOption("-n|--name")]
             public string Name {get;set;}
         }
     }

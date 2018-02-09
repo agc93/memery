@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using static System.Console;
 using Spectre.CommandLine;
-using Spectre.CommandLine.Annotations;
+using System.Linq;
 
 namespace Memery.Console.Commands
 {
@@ -15,7 +15,7 @@ namespace Memery.Console.Commands
         {
             _client = client;
         }
-        public override int Run(Settings settings)
+        public override int Execute(Settings settings, ILookup<string, string> unmapped)
         {
             var url = Uri.TryCreate(settings.Location, UriKind.Absolute, out var u)
                 ? u
@@ -30,10 +30,10 @@ namespace Memery.Console.Commands
 
         public class Settings
         {
-            [Argument(0, "<url>")]
+            [CommandArgument(0, "<url>")]
             public string Location { get; set; }
 
-            [Option("-n|--name")]
+            [CommandOption("-n|--name")]
             public string Name { get; set; }
         }
     }

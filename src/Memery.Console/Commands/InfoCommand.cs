@@ -14,7 +14,7 @@ namespace Memery.Console.Commands
         public InfoCommand(IOptions<MemeryConsoleOptions> options) {
             _options = options;
         }
-        public override int Run(Settings settings)
+        public override int Execute(Settings settings, System.Linq.ILookup<string, string> unmapped)
         {
             WriteLine($"Memery {this.GetType().Assembly.GetName().Version}");
             WriteLine($"{this.GetType().Assembly.Location}: Application root is {System.IO.Directory.GetCurrentDirectory()}");
