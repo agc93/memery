@@ -8,6 +8,8 @@ This is a simple container-based application for making links to uploaded memes 
 
 Upload your favourite meme, optionally give it a name, and you'll get two links to your new web-powered meme goodness: one has the name right there in the link so people know what they're getting, the other is a code that redirects to your image, making your meme a fun (or horrifying) surprise for your teammates.
 
+![Demo](memery.gif)
+
 ### Usage
 
 Ha! You thought there'd be docs.
