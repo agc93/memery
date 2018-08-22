@@ -15,6 +15,7 @@ import { UploadComponent } from "./components/upload/upload.component";
 import { ListComponent } from "./components/list/list.component";
 import { ImageLinkComponent } from "./components/imagelink/imagelink.component";
 import { UploadRemoteComponent } from "./components/remote/remote.component";
+import { PreviewComponent } from "./components/preview/preview.component";
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { UploadRemoteComponent } from "./components/remote/remote.component";
         HeaderComponent,
         UploadComponent,
         ListComponent,
-        UploadRemoteComponent
+        UploadRemoteComponent,
+        PreviewComponent
     ],
     imports: [
         CommonModule,

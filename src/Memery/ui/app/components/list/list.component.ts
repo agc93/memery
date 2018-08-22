@@ -11,7 +11,7 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
 import { Observable } from 'rxjs/Observable';
-import { MatPaginator, MatSort, MatSnackBar } from '@angular/material';
+import { MatPaginator, MatSort, MatSnackBar, MatSliderChange } from '@angular/material';
 
 @Component({
     selector: 'image-list',
@@ -21,7 +21,8 @@ import { MatPaginator, MatSort, MatSnackBar } from '@angular/material';
 export class ListComponent implements OnInit {
     service: ImageService;
     dataSource: IndexDataSource;
-    displayedColumns = ['id', 'name', 'location', 'delete'];
+    private displayedColumns = ['id', 'name', 'location', 'delete'];
+    previewSize: number = 50;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
@@ -32,14 +33,32 @@ export class ListComponent implements OnInit {
         private _snackBar: MatSnackBar
     ) { }
 
+    onSizeChanged(event: MatSliderChange) {
+        console.log(`event value was ${event.value}`);
+        localStorage.setItem('memery_previewSize', (new Number(event.value) || 50).toString());
+    }
+
+    async setStoragePreference(size: number) {
+        
+    }
+
     ngOnInit() {
         this.service = new ImageService(this._http, this.originUrl)
         this.dataSource = new IndexDataSource(this.service, this.paginator, this.sort);
+        this.previewSize = parseInt(localStorage.getItem('memery_previewSize') || '50');
+    }
+
+    getColumns(): string[] {
+        return this.displayPreview ? ['thumb'].concat(this.displayedColumns) : this.displayedColumns
     }
 
     updateFilter(filter: string): void {
         console.debug(`updating filter! (to ${filter || 'empty'})`);
         this.dataSource.filter = filter;
+    }
+
+    get displayPreview():boolean {
+        return this.previewSize > 0
     }
 
     delete(id: string) {

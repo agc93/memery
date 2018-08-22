@@ -8,8 +8,16 @@ mat-expansion-panel
                 input(matInput name='filter' #filter placeholder='Filter images')
             a(mat-button, (click)='updateFilter(filter.value)') Filter
             a(mat-button, matTooltip='Refresh', matTooltipPosition='after', (click)='updateFilter("")') Clear
+            span.fill-space
+            span.preview
+                | Previews
+                mat-slider.preview(min='0', max='150', step='15', [(ngModel)]='previewSize', matTooltip='Set to 0 to disable', (change)="onSizeChanged($event)")
         //- mat-table(#table [dataSource]='dataSource' matSort #sortForDataSource="matSort")
         mat-table(#table [dataSource]='dataSource' matSort)
+            ng-container(matColumnDef='thumb')
+                mat-header-cell(*matHeaderCellDef) Preview
+                mat-cell(*matCellDef="let row")
+                    image-preview([path]='row.id', [size]='previewSize')
             ng-container(matColumnDef='id')
                 mat-header-cell(*matHeaderCellDef mat-sort-header) ID
                 mat-cell(*matCellDef="let row")
@@ -27,8 +35,8 @@ mat-expansion-panel
                 mat-header-cell(*matHeaderCellDef) Delete
                 mat-cell(*matCellDef="let row")
                     button(mat-button, (click)='delete(row.id)') #[mat-icon delete]
-            mat-header-row(*matHeaderRowDef="displayedColumns")
-            mat-row(*matRowDef="let row; columns: displayedColumns;")
+            mat-header-row(*matHeaderRowDef="getColumns()")
+            mat-row(*matRowDef="let row; columns: getColumns();")
         mat-paginator(
             #paginator,
             [length]="dataSource.resultsLength",
