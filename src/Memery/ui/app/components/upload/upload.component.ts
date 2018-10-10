@@ -1,9 +1,9 @@
 import { MatSnackBar } from '@angular/material';
 import { BaseComponent } from './../base.component';
-import { Http, Response } from '@angular/http';
 import { Component, Inject, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormArray, FormGroupDirective, FormControl, FormBuilder, Validators } from "@angular/forms";
-import { DOCUMENT } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { ImageRef } from './../../services/imageRef';
 
 @Component({
     selector: 'upload',
@@ -21,7 +21,7 @@ export class UploadComponent extends BaseComponent {
 
     constructor(
         private fb: FormBuilder,
-        private _http: Http,
+        private _http: HttpClient,
         @Inject('BASE_URL') private originUrl: string,
         private _snackBar: MatSnackBar
     ) {
@@ -65,24 +65,24 @@ export class UploadComponent extends BaseComponent {
         _formData.append("name", name);
         let body = _formData;
         if (name == this.file.name) {
-            this._http.post("/images", body)
+            this._http.post<ImageRef>("/images", body)
                 .subscribe(resp => this.handleResponse(resp));
         } else {
-            this._http.put(`/images/${encodeURIComponent(name)}`, body)
+            this._http.put<ImageRef>(`/images/${encodeURIComponent(name)}`, body)
                 .subscribe(resp => this.handleResponse(resp));
         }
     }
 
-    handleResponse(response: Response) {
-        console.log(response.json());
-        var value = response.json();
-        console.log(`response: ${value}`);
+    handleResponse(response: ImageRef) {
+        // console.log(response.json());
+        // var value = response.json();
+        // console.log(`response: ${value}`);
         var fg = this.formArray.get([2]) as FormGroup;
         if (fg) {
-            super.setFormValue(fg, 'code', value.id);
-            super.setFormValue(fg, 'name', value.name);
+            super.setFormValue(fg, 'code',  response.id);
+            super.setFormValue(fg, 'name', response.name);
         }
-        this.code = value.id;
+        this.code = response.id;
         console.debug(`uploaded response parsed`);
         this.onUpload.next();
         this._snackBar.open('Image uploaded!', 'Dismiss', { duration: 2000 });

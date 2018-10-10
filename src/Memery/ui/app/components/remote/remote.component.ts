@@ -1,7 +1,7 @@
 import { MatSnackBar } from '@angular/material';
-import { Http, Response, URLSearchParams } from '@angular/http';
 import { ImageRef } from './../../services/imageRef';
 import { Component, Inject, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Component({
     selector: 'upload-remote',
@@ -17,7 +17,7 @@ export class UploadRemoteComponent {
     @Output() onUpload = new EventEmitter();
 
     constructor(
-        private _http: Http,
+        private _http: HttpClient,
         @Inject('BASE_URL') private originUrl: string,
         private _snackBar: MatSnackBar
     ) { }
@@ -54,23 +54,24 @@ export class UploadRemoteComponent {
 
     upload(): void {
         this.isLoading = true;
-        let params: URLSearchParams = new URLSearchParams();
+        let params: HttpParams = new HttpParams();
         params.set('url', this.url);
         var url = `${this.originUrl}images`;
         if (this.name == this.getFilename(this.url)) {
             // POST upload
-            this._http.post(url, null, { search: params })
+            this._http.post<ImageRef>(url, null, { params: params })
                 .subscribe(resp => this.handleResponse(resp));
         } else {
             // named PUT upload
             url = `${url}/${encodeURIComponent(this.name)}`
-            this._http.put(url, null, { search: params })
+            this._http.put<ImageRef>(url, null, { params: params })
                 .subscribe(resp => this.handleResponse(resp));
         }
     }
 
-    handleResponse(response: Response) {
-        var value = response.json();
+    handleResponse(response: ImageRef) {
+        // var value = response.json();
+        var value = response;
         console.debug(`response: ${value}`);
         this.response = value;
         this._snackBar.open('Image uploaded!', 'Dismiss', { duration: 2000 });

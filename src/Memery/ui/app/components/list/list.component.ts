@@ -1,17 +1,14 @@
-import { ImageRef } from './../../services/imageRef';
 import { ImageService } from './../../services/image.service';
 import { IndexDataSource } from './../../services/index.datasource';
-import { Http } from '@angular/http';
 import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
-import {DataSource} from '@angular/cdk/collections';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/observable/fromEvent';
-import { Observable } from 'rxjs/Observable';
 import { MatPaginator, MatSort, MatSnackBar, MatSliderChange } from '@angular/material';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
     selector: 'image-list',
@@ -28,22 +25,17 @@ export class ListComponent implements OnInit {
     @ViewChild(MatSort) sort: MatSort;
 
     constructor(
-        private _http: Http,
-        @Inject('BASE_URL') private originUrl: string,
-        private _snackBar: MatSnackBar
-    ) { }
+        private _imgService: ImageService,
+        private _snackBar: MatSnackBar,
+        private _storage: StorageService
+    ) { this.service = _imgService}
 
     onSizeChanged(event: MatSliderChange) {
         console.log(`event value was ${event.value}`);
-        localStorage.setItem('memery_previewSize', (new Number(event.value) || 50).toString());
-    }
-
-    async setStoragePreference(size: number) {
-        
+        this._storage.setValue('previewSize', new Number(event.value));
     }
 
     ngOnInit() {
-        this.service = new ImageService(this._http, this.originUrl)
         this.dataSource = new IndexDataSource(this.service, this.paginator, this.sort);
         this.previewSize = parseInt(localStorage.getItem('memery_previewSize') || '50');
     }

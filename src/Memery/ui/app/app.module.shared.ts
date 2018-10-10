@@ -3,9 +3,9 @@ import { MaterialModule } from './app.module.material';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { FlexLayoutModule } from "@angular/flex-layout";
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
@@ -16,6 +16,8 @@ import { ListComponent } from "./components/list/list.component";
 import { ImageLinkComponent } from "./components/imagelink/imagelink.component";
 import { UploadRemoteComponent } from "./components/remote/remote.component";
 import { PreviewComponent } from "./components/preview/preview.component";
+
+import { ServicesModule } from "./services/services.module";
 
 @NgModule({
     declarations: [
@@ -31,17 +33,18 @@ import { PreviewComponent } from "./components/preview/preview.component";
     ],
     imports: [
         CommonModule,
-        HttpModule,
+        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
         CompatibilityModule,
         FlexLayoutModule,
+        ServicesModule.forRoot(),
         RouterModule.forRoot([
             { path: '', component: HomeComponent },
             { path: '**', redirectTo: 'home' }
         ])
-    ],
+    ]
 })
 export class AppModuleShared {
 }

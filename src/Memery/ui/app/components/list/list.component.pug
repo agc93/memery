@@ -6,11 +6,11 @@ mat-expansion-panel
         .table-header
             mat-form-field
                 input(matInput name='filter' #filter placeholder='Filter images')
-            a(mat-button, (click)='updateFilter(filter.value)') Filter
-            a(mat-button, matTooltip='Refresh', matTooltipPosition='after', (click)='updateFilter("")') Clear
+            a.header-element(mat-button, (click)='updateFilter(filter.value)') Filter
+            a.header-element(mat-button, matTooltip='Refresh', matTooltipPosition='after', (click)='updateFilter("")') Clear
             span.fill-space
-            span.preview
-                | Previews
+            span.preview.header-element
+                span(matTooltip='Optionally add preview thumbnails to the image list', matTooltipPosition='before' matTooltipShowDelay='1000') Previews
                 mat-slider.preview(min='0', max='150', step='15', [(ngModel)]='previewSize', matTooltip='Set to 0 to disable', (change)="onSizeChanged($event)")
         //- mat-table(#table [dataSource]='dataSource' matSort #sortForDataSource="matSort")
         mat-table(#table [dataSource]='dataSource' matSort)

@@ -1,30 +1,31 @@
 import { ImageRef, IndexResponse } from './imageRef';
-import { Inject } from '@angular/core';
-import { Http, Response } from "@angular/http";
+import { Inject, Injectable } from '@angular/core';
+// import { Http, Response, Headers } from "@angular/http";
 import { Observable } from "rxjs/Observable";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+@Injectable()
 export class ImageService {
-    private headers: Headers;
+    private headers: HttpHeaders;
     constructor(
-        private http: Http,
-        private originUrl: string
+        private http: HttpClient,
+        @Inject('BASE_URL') private originUrl: string
     ) {
-        this.headers = new Headers();
+        this.headers = new HttpHeaders();
         this.headers.append('Content-Type', 'application/json');
         this.headers.append('Accept', 'application/json');
     }
 
     public getAllImages(): Observable<ImageRef[]> {
         console.debug(`Fetching images from ${this.originUrl}`);
-        return this.http.get(`${this.originUrl}images`)
-            .map((response: Response) => response.json() as IndexResponse)
+        return this.http.get<IndexResponse>(`${this.originUrl}images`)
             .map(k => {
                 var ks = Object.keys(k);
                 return ks.map(i => k[i]);
             });
     }
 
-    public deleteImage(id: string): Observable<Response> {
+    public deleteImage(id: string): Observable<Object> {
         console.debug('calling deleteImage() from service!');
         return this.http.delete(`/images/${id}`)
     }
