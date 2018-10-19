@@ -5,7 +5,7 @@ export class VersionService {
 
     // private _prefix: string = "memery";
 
-    private getVersion(): string {
+    public getVersion(): string {
         return "0.2"
     }
 
