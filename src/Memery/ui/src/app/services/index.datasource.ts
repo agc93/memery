@@ -5,6 +5,11 @@ import { BehaviorSubject , Observable, pipe, from } from 'rxjs';
 import { merge, map, startWith, switchMap } from 'rxjs/operators';
 import { MatPaginator, MatSort } from '@angular/material';
 
+/**
+ * DEPRECATED.
+ * This class is intended to serve as a stand-in for the MatTableDataSource
+ * Currently, it looksl ike the stream does not emit correctly, so fallback to MatTableDataSource is in place.
+ */
 export class IndexDataSource extends DataSource<ImageRef> {
     _filterChange = new BehaviorSubject('');
     isLoadingResults = false;
@@ -33,7 +38,7 @@ export class IndexDataSource extends DataSource<ImageRef> {
 		return from(displayDataChanges).pipe(
         // return pipe(
 			// merge(...displayDataChanges),
-            startWith(null),
+            // startWith(null),
             switchMap(() => {
                 console.debug(`invoking ImageService!`);
                 this.isLoadingResults = true;

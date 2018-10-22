@@ -1,14 +1,12 @@
 import { ImageService } from './../../services/image.service';
 import { IndexDataSource } from './../../services/index.datasource';
 import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { ImageRef } from '../../services/imageRef';
 
-
-
-
-
-
-import { MatPaginator, MatSort, MatSnackBar, MatSliderChange } from '@angular/material';
+import { MatPaginator, MatSort, MatSnackBar, MatSliderChange, MatTableDataSource, MatTable } from '@angular/material';
 import { StorageService } from '../../services/storage.service';
+import { Observable } from 'rxjs';
+import { DataSource } from '@angular/cdk/table';
 
 @Component({
     selector: 'image-list',
@@ -17,12 +15,15 @@ import { StorageService } from '../../services/storage.service';
 })
 export class ListComponent implements OnInit {
     service: ImageService;
-    dataSource: IndexDataSource;
+	dataSource: MatTableDataSource<ImageRef> = new MatTableDataSource<ImageRef>();
+	// dataSource: DataSource<ImageRef>;
     private displayedColumns = ['id', 'name', 'location', 'delete'];
-    previewSize: number = 50;
+	previewSize: number = 50;
+	dataStream: Observable<ImageRef[]>;
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
-    @ViewChild(MatSort) sort: MatSort;
+	@ViewChild(MatSort) sort: MatSort;
+	@ViewChild(MatTable) table: MatTable<ImageRef>;
 
     constructor(
         private _imgService: ImageService,
@@ -36,7 +37,14 @@ export class ListComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.dataSource = new IndexDataSource(this.service, this.paginator, this.sort);
+		// this.dataStream = this.service.getAllImages();
+		// this.dataSource = new IndexDataSource(this.service, this.paginator, this.sort);
+		this.service.getAllImages().subscribe(r => {
+			if (!r) return;
+			this.dataSource = new MatTableDataSource(r);
+			this.dataSource.sort = this.sort;
+			this.dataSource.paginator = this.paginator;
+		})
         this.previewSize = parseInt(localStorage.getItem('memery_previewSize') || '50');
     }
 
@@ -57,7 +65,7 @@ export class ListComponent implements OnInit {
         this.service.deleteImage(id)
             .subscribe(
                 resp => {
-                    this.dataSource._filterChange.next(this.dataSource.filter);
+					this.refresh();
                     this._snackBar.open('Image successfully deleted!', 'Dismiss', { duration: 3000 });
                 },
                 err => {
@@ -65,5 +73,9 @@ export class ListComponent implements OnInit {
                     this._snackBar.open('There was an error deleting the image! Is it already gone?', 'Oh no!', { duration: 6000 });
                 }
             );
-    }
+	}
+
+	refresh() {
+		this.table.renderRows();
+	}
 }

@@ -17,7 +17,8 @@ namespace Memery.Infrastructure
         private List<string> Extensions => new List<string> {
             ".js",
             ".css",
-            ".html"
+            ".html",
+            ".map"
         };
 
         public int Order => 1;

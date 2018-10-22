@@ -1,4 +1,3 @@
-// import { CompatibilityModule } from './app.module.compat';
 import { MaterialModule } from './app.module.material';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,6 +15,7 @@ import { ListComponent } from "./components/list/list.component";
 import { ImageLinkComponent } from "./components/imagelink/imagelink.component";
 import { UploadRemoteComponent } from "./components/remote/remote.component";
 import { PreviewComponent } from "./components/preview/preview.component";
+import { ChangelogComponent, ChangelogSheet } from './components/changelog/changelog.component';
 
 import { ServicesModule } from "./services/services.module";
 
@@ -29,7 +29,9 @@ import { ServicesModule } from "./services/services.module";
         UploadComponent,
         ListComponent,
         UploadRemoteComponent,
-        PreviewComponent
+		PreviewComponent,
+		ChangelogSheet,
+		ChangelogComponent,
     ],
     imports: [
         CommonModule,
@@ -44,7 +46,10 @@ import { ServicesModule } from "./services/services.module";
             { path: '', component: HomeComponent, pathMatch: 'full' },
             { path: '**', redirectTo: 'home' }
         ])
-    ]
+	],
+	entryComponents: [
+		ChangelogSheet
+	]
 })
 export class AppModuleShared {
 }
