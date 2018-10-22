@@ -1,4 +1,4 @@
-import { CompatibilityModule } from './app.module.compat';
+// import { CompatibilityModule } from './app.module.compat';
 import { MaterialModule } from './app.module.material';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -37,11 +37,11 @@ import { ServicesModule } from "./services/services.module";
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
-        CompatibilityModule,
+        // CompatibilityModule,
         FlexLayoutModule,
         ServicesModule.forRoot(),
         RouterModule.forRoot([
-            { path: '', component: HomeComponent },
+            { path: '', component: HomeComponent, pathMatch: 'full' },
             { path: '**', redirectTo: 'home' }
         ])
     ]

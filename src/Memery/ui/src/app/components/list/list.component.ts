@@ -1,12 +1,12 @@
 import { ImageService } from './../../services/image.service';
 import { IndexDataSource } from './../../services/index.datasource';
 import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
-import 'rxjs/add/operator/startWith';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/observable/fromEvent';
+
+
+
+
+
+
 import { MatPaginator, MatSort, MatSnackBar, MatSliderChange } from '@angular/material';
 import { StorageService } from '../../services/storage.service';
 

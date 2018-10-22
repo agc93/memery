@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 @NgModule({
     bootstrap: [ AppComponent ],
     imports: [
-        BrowserModule,
+        BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
         AppModuleShared,
         BrowserAnimationsModule
     ],
