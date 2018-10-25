@@ -1,3 +1,4 @@
+import { ImageService } from './../../services/image.service';
 import { MatSnackBar } from '@angular/material';
 import { ImageRef } from './../../services/imageRef';
 import { Component, Inject, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
@@ -17,7 +18,8 @@ export class UploadRemoteComponent {
     @Output() onUpload = new EventEmitter();
 
     constructor(
-        private _http: HttpClient,
+		private _http: HttpClient,
+		private imageService: ImageService,
         @Inject('BASE_URL') private originUrl: string,
         private _snackBar: MatSnackBar
     ) { }
@@ -54,19 +56,9 @@ export class UploadRemoteComponent {
 
     upload(): void {
         this.isLoading = true;
-        let params: HttpParams = new HttpParams();
-        params.set('url', this.url);
-        var url = `${this.originUrl}images`;
-        if (this.name == this.getFilename(this.url)) {
-            // POST upload
-            this._http.post<ImageRef>(url, null, { params: params })
-                .subscribe(resp => this.handleResponse(resp));
-        } else {
-            // named PUT upload
-            url = `${url}/${encodeURIComponent(this.name)}`
-            this._http.put<ImageRef>(url, null, { params: params })
-                .subscribe(resp => this.handleResponse(resp));
-        }
+		this.imageService
+			.addImage(this.name, this.url, this.getFilename(this.name))
+			.subscribe(resp => this.handleResponse(resp));
     }
 
     handleResponse(response: ImageRef) {

@@ -1,0 +1,10 @@
+{
+	"0.1": ["Initial release"],
+	"0.2":
+		[
+			"Thumbnail previews! Change the size using the new Preview slider.",
+			"Uploads are no longer a huge hack made of JS and regret",
+			"Persists user settings a little more reliably",
+			"This changelog 🤔"
+	]
+}

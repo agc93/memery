@@ -19,7 +19,7 @@ export class HomeComponent {
     @ViewChild(ListComponent) list: ListComponent;
 
     refresh() {
-		this.list.refresh();
+		this.list.refresh(true);
         // this.list.dataSource._filterChange.next(this.list.dataSource.filter);
     }
 }

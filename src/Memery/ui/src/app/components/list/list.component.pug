@@ -39,7 +39,6 @@ mat-expansion-panel
             mat-row(*matRowDef="let row; columns: getColumns();")
         mat-paginator(
             #paginator,
-            [length]="dataSource.resultsLength",
             [pageIndex]="0",
             [pageSize]="5",
             [pageSizeOptions]="[5, 10, 25, 100]")

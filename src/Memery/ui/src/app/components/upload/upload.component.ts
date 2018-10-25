@@ -1,3 +1,4 @@
+import { ImageService } from './../../services/image.service';
 import { MatSnackBar } from '@angular/material';
 import { BaseComponent } from './../base.component';
 import { Component, Inject, Output, EventEmitter } from '@angular/core';
@@ -21,7 +22,8 @@ export class UploadComponent extends BaseComponent {
 
     constructor(
         private fb: FormBuilder,
-        private _http: HttpClient,
+		private _http: HttpClient,
+		private imageService: ImageService,
         @Inject('BASE_URL') private originUrl: string,
         private _snackBar: MatSnackBar
     ) {
@@ -58,19 +60,10 @@ export class UploadComponent extends BaseComponent {
     upload(): void {
         console.debug('calling upload() from form!');
         this.isLoading = true;
-        let _formData = new FormData();
+
         let name = super.getFormArrayValue(this.formArray, 1, 'name');
         console.debug(`retrieved name: ${name}`);
-        _formData.append("file", this.file);
-        _formData.append("name", name);
-        let body = _formData;
-        if (name == this.file.name) {
-            this._http.post<ImageRef>("/images", body)
-                .subscribe(resp => this.handleResponse(resp));
-        } else {
-            this._http.put<ImageRef>(`/images/${encodeURIComponent(name)}`, body)
-                .subscribe(resp => this.handleResponse(resp));
-        }
+        this.imageService.uploadImage(name, this.file).subscribe(resp => this.handleResponse(resp));
     }
 
     handleResponse(response: ImageRef) {

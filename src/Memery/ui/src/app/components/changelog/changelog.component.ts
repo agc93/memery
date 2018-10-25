@@ -18,7 +18,7 @@ export class ChangelogComponent  {
     ) {
         var latest = version.getVersion();
         if (storage.getValue('lastVersion', '0.1') != latest) {
-            let bar = this.snackBar.open(`Memery has been updated to ${latest}. Check out what's changed?`, "Changes", { duration: 5000});
+            let bar = this.snackBar.open(`Memery has been updated to ${latest}. Check out what's changed?`, "Changes", { duration: 8000});
             bar.onAction().subscribe(() => {
                 // storage.setValue('lastVersion', latest);
                 this.dialog.open(ChangelogSheet);
