@@ -45,7 +45,12 @@ namespace Memery
                 });
             // }
             services.AddMediatR();
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc(MetadataService.APIName, new MetadataService().GetApiInfo());
+                c.IncludeXmlComments(MetadataService.GetMetadataFilePath());
+            });
             services
+                .AddSingleton<MetadataService, MetadataService>()
                 .AddSingleton<IImageIndexService, ImageIndexService>()
                 .AddSingleton<IFileUploadService, FileUploadService>();
         }
@@ -61,7 +66,16 @@ namespace Memery
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            // app.UseHttpsRedirection();
+            
+            app.UseSwagger(c => {
+                c.RouteTemplate = "/api/{documentName}";
+            });
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint($"/api/{MetadataService.APIName}", $"Memery API ({MetadataService.APIName})");
+                c.RoutePrefix = "help";
+                c.DocumentTitle = "Memery API";
+            });
+
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
