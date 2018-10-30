@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+// import { environment } from '../../environments/environment';
 
 @Injectable()
 export class VersionService {
 
 	// private _prefix: string = "memery";
+	VERSION: string = require('../../../package.json').version;
+	CHANGELOG: Map<string, string[]> = require('../../changelog.json')
 
 	public getVersion(): string {
-		return environment.VERSION || "😖"
+		return this.VERSION || "😖"
 	}
 
 	public getChanges(version?: string): string[] {
@@ -22,7 +24,7 @@ export class VersionService {
 		// 	: changes;
 	}
 
-	private _changes: Map<string, string[]> = new Map(Object.entries(environment.CHANGELOG));
+	private _changes: Map<string, string[]> = new Map(Object.entries(this.CHANGELOG));
     /* private _changes: Map<string, string[]> = new Map([
         ["0.1", ["Initial release"]],
         ["0.2", [

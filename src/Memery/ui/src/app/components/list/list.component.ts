@@ -1,6 +1,5 @@
 import { ImageService } from './../../services/image.service';
-import { IndexDataSource } from './../../services/index.datasource';
-import { Component, Inject, ViewChild, ElementRef, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, OnInit, Output, EventEmitter } from '@angular/core';
 import { ImageRef } from '../../services/imageRef';
 
 import { MatPaginator, MatSort, MatSnackBar, MatSliderChange, MatTableDataSource, MatTable } from '@angular/material';
@@ -15,17 +14,17 @@ import { startWith, switchMap, map } from 'rxjs/operators';
 })
 export class ListComponent implements OnInit {
     service: ImageService;
-	dataSource: MatTableDataSource<ImageRef> = new MatTableDataSource<ImageRef>();
-	// dataSource: DataSource<ImageRef>;
+    dataSource: MatTableDataSource<ImageRef> = new MatTableDataSource<ImageRef>();
+    // dataSource: DataSource<ImageRef>;
     private displayedColumns = ['id', 'name', 'location', 'delete'];
-	previewSize: number = 50;
-	dataStream: Observable<ImageRef[]>;
+    previewSize: number = 50;
+    dataStream: Observable<ImageRef[]>;
 
-	@Output() onUpdate: EventEmitter<ImageRef> = new EventEmitter();
+    @Output() onUpdate: EventEmitter<ImageRef> = new EventEmitter();
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
-	@ViewChild(MatSort) sort: MatSort;
-	@ViewChild(MatTable) table: MatTable<ImageRef>;
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatTable) table: MatTable<ImageRef>;
 
     constructor(
         private _imgService: ImageService,
@@ -39,25 +38,23 @@ export class ListComponent implements OnInit {
     }
 
     ngOnInit() {
-		// this.dataStream = this.service.getAllImages();
-		// this.dataSource = new IndexDataSource(this.service, this.paginator, this.sort);
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
-		this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
-		merge(this.sort.sortChange, this.onUpdate)
-		.pipe(
-			startWith([]),
-			switchMap(data => {
-				return this.service.getAllImages()
-			}),
-			map(data => {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+        merge(this.sort.sortChange, this.onUpdate)
+        .pipe(
+            startWith([]),
+            switchMap(data => {
+                return this.service.getAllImages()
+            }),
+            map(data => {
 
-				return data;
-			})
-		).subscribe(resp => {
-			this.dataSource.data = resp;
-			this.table.renderRows()
-		});
+                return data;
+            })
+        ).subscribe(resp => {
+            this.dataSource.data = resp;
+            this.table.renderRows()
+        });
         this.previewSize = parseInt(localStorage.getItem('memery_previewSize') || '50');
     }
 
@@ -78,7 +75,7 @@ export class ListComponent implements OnInit {
         this.service.deleteImage(id)
             .subscribe(
                 resp => {
-					this.refresh(true);
+                    this.refresh(true);
                     this._snackBar.open('Image successfully deleted!', 'Dismiss', { duration: 3000 });
                 },
                 err => {
@@ -86,12 +83,12 @@ export class ListComponent implements OnInit {
                     this._snackBar.open('There was an error deleting the image! Is it already gone?', 'Oh no!', { duration: 6000 });
                 }
             );
-	}
+    }
 
-	refresh(fetchRemote: boolean = false) {
-		if (fetchRemote) {
-			this.onUpdate.next();
-		}
-		this.table.renderRows();
-	}
+    refresh(fetchRemote: boolean = false) {
+        if (fetchRemote) {
+            this.onUpdate.next();
+        }
+        this.table.renderRows();
+    }
 }

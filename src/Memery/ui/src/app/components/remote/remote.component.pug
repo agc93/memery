@@ -12,7 +12,7 @@ mat-expansion-panel
             button(mat-button, matStepperNext, type='button') Next
         mat-step(label='Upload')
             button(*ngIf='url && name && !response && !isLoading', mat-button, (click)='upload()') Upload
-            mat-spinner(*ngIf="isLoading") 
+            mat-spinner(*ngIf="isLoading")
             p(*ngIf='response') Upload complete!
             button(*ngIf='response', mat-button, matStepperNext, type='button') Next
         mat-step(label='Share')
@@ -29,3 +29,4 @@ mat-expansion-panel
                         p Use it wisely!
                 mat-card-actions
                     a(mat-button, color="primary", [href]='imageSrc', target='_blank') VIEW IMAGE
+                    a(mat-button, (click)="reset()") Reset

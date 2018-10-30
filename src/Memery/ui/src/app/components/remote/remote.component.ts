@@ -1,8 +1,7 @@
 import { ImageService } from './../../services/image.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatHorizontalStepper } from '@angular/material';
 import { ImageRef } from './../../services/imageRef';
-import { Component, Inject, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, Inject, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 
 @Component({
     selector: 'upload-remote',
@@ -15,10 +14,11 @@ export class UploadRemoteComponent {
     response: ImageRef | undefined;
     isLoading: boolean;
 
-    @Output() onUpload = new EventEmitter();
+	@Output() onUpload = new EventEmitter();
+
+	@ViewChild(MatHorizontalStepper) stepper: MatHorizontalStepper;
 
     constructor(
-		private _http: HttpClient,
 		private imageService: ImageService,
         @Inject('BASE_URL') private originUrl: string,
         private _snackBar: MatSnackBar
@@ -62,14 +62,13 @@ export class UploadRemoteComponent {
     }
 
     handleResponse(response: ImageRef) {
-        // var value = response.json();
         var value = response;
         console.debug(`response: ${value}`);
         this.response = value;
         this._snackBar.open('Image uploaded!', 'Dismiss', { duration: 2000 });
         this.onUpload.next();
         this.isLoading = false;
-        this.url = '';
+        // this.url = '';
     }
 
     private getFilename(url: string) {
@@ -82,10 +81,11 @@ export class UploadRemoteComponent {
         return ''
     }
 
-    private reset(): void {
+    reset(): void {
         this.name = '';
         this.url = '';
-        this.onUpload.next();
-        this.isLoading = false;
+		this.isLoading = false;
+		this.response = undefined;
+		this.stepper.selectedIndex = 0;
     }
 }

@@ -1,6 +1,6 @@
 import { ListComponent } from './../list/list.component';
 import { Component, Inject, ViewChild } from '@angular/core';
-import { FormGroup, FormArray, FormGroupDirective, FormControl, FormBuilder, Validators } from "@angular/forms";
+// import { FormGroup, FormArray, FormGroupDirective, FormControl, FormBuilder, Validators } from "@angular/forms";
 
 @Component({
     selector: 'home',
@@ -10,16 +10,13 @@ import { FormGroup, FormArray, FormGroupDirective, FormControl, FormBuilder, Val
 export class HomeComponent {
 
     constructor(
-        private fb: FormBuilder,
+        // private fb: FormBuilder,
         @Inject('BASE_URL') private originUrl: string
-    ) {
-        // this.createForms();
-    }
+    ) { }
 
     @ViewChild(ListComponent) list: ListComponent;
 
     refresh() {
 		this.list.refresh(true);
-        // this.list.dataSource._filterChange.next(this.list.dataSource.filter);
     }
 }

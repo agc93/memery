@@ -1,6 +1,6 @@
 import { StorageService } from './../../services/storage.service';
-import { MatSnackBar, MatSnackBarRef, MatDialog, MatDialogRef } from '@angular/material';
-import { Component, Inject, Input } from '@angular/core';
+import { MatSnackBar, MatDialog, MatDialogRef } from '@angular/material';
+import { Component } from '@angular/core';
 import { VersionService } from '../../services/version.service';
 
 @Component({
@@ -9,7 +9,6 @@ import { VersionService } from '../../services/version.service';
 	styleUrls: ['./changelog.component.styl']
 })
 export class ChangelogComponent  {
-    // displayed: MatSnackBarRef;
     constructor(
         private snackBar: MatSnackBar,
         private dialog: MatDialog,
@@ -20,7 +19,6 @@ export class ChangelogComponent  {
         if (storage.getValue('lastVersion', '0.1') != latest) {
             let bar = this.snackBar.open(`Memery has been updated to ${latest}. Check out what's changed?`, "Changes", { duration: 8000});
             bar.onAction().subscribe(() => {
-                // storage.setValue('lastVersion', latest);
                 this.dialog.open(ChangelogSheet);
             });
             bar.afterDismissed().subscribe(() => {

@@ -60,16 +60,12 @@ export class UploadComponent extends BaseComponent {
     upload(): void {
         console.debug('calling upload() from form!');
         this.isLoading = true;
-
         let name = super.getFormArrayValue(this.formArray, 1, 'name');
         console.debug(`retrieved name: ${name}`);
         this.imageService.uploadImage(name, this.file).subscribe(resp => this.handleResponse(resp));
     }
 
     handleResponse(response: ImageRef) {
-        // console.log(response.json());
-        // var value = response.json();
-        // console.log(`response: ${value}`);
         var fg = this.formArray.get([2]) as FormGroup;
         if (fg) {
             super.setFormValue(fg, 'code',  response.id);
@@ -83,9 +79,6 @@ export class UploadComponent extends BaseComponent {
     }
 
     createForms(): any {
-        /* this.formGroup = this.fb.group({
-            name: this.fb.array(['', Validators.required])
-        }) */
         this.formArray = this.fb.array([
             this.fb.group({file: ['', Validators.required]}),
             this.fb.group({name: ['', Validators.required]}),
