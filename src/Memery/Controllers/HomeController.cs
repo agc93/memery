@@ -7,6 +7,7 @@ using HeyRed.Mime;
 using MediatR;
 using Memery.Configuration;
 using Memery.Diagnostics;
+using Memery.Infrastructure;
 using Memery.Messaging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -38,6 +39,7 @@ namespace Memery.Controllers
         }
 
         [HttpGet("{id}")]
+        [AngularConstraint]
         public async Task<IActionResult> Meme(string id)
         {
             try
@@ -53,8 +55,10 @@ namespace Memery.Controllers
         }
 
         [HttpGet("info")]
-        public async Task<IActionResult> Info() {
-            return Ok(new {
+        public IActionResult Info()
+        {
+            return Ok(new
+            {
                 version = this.GetType().Assembly.GetName().Version,
                 options = _options
             });

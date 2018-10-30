@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Memery.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +34,16 @@ namespace Memery
                 .AddJsonOptions(o =>
                     o.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore
                 );
+            // ServiceProvider serviceProvider = services.BuildServiceProvider();
+            // IHostingEnvironment env = serviceProvider.GetService<IHostingEnvironment>();
+            // if (env.IsProduction())
+            // {
+                services.AddSpaStaticFiles(configuration =>
+                {
+                    // configuration.RootPath = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, "ui", "dist");
+                    configuration.RootPath = Path.Combine("ui", "dist");
+                });
+            // }
             services.AddMediatR();
             services
                 .AddSingleton<IImageIndexService, ImageIndexService>()
@@ -44,28 +56,39 @@ namespace Memery
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions
-                {
-                    HotModuleReplacement = true
-                });
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSpaStaticFiles();
 
-            app.UseMvc(routes =>
+            // app.MapWhen(c => !c.Request.Path.Value.EndsWith(".js"), config =>{
+                app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                // routes.MapRoute(
+                //     name: "default",
+                //     template: "{controller}/{action?}/{id?}");
 
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Home", action = "Index" });
+                // routes.MapSpaFallbackRoute(
+                //     name: "spa-fallback",
+                //     defaults: new { controller = "Home", action = "Index" });
             });
+            // });
+            app.UseSpa(spa =>
+            {
+                // spa.Options.
+                spa.Options.SourcePath = "ui";
+                if (env.IsDevelopment())
+                {
+                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
+            });
+
+            // app
         }
     }
 }

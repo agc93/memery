@@ -1,0 +1,5 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+span.mat-expansion-indicator {
+	margin-left: 5px;
+}

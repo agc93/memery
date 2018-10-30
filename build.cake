@@ -11,6 +11,7 @@
 
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
+var framework = Argument("framework", "netcoreapp2.1");
 var fallbackVersion = Argument<string>("force-version", EnvironmentVariable("FALLBACK_VERSION") ?? "0.1.0");
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -115,7 +116,7 @@ Task("Post-Build")
 	CreateDirectory(artifacts + "build/Memery");
 	var frameworkDir = $"{artifacts}build/Memery/";
 	CreateDirectory(frameworkDir);
-	var files = GetFiles($"./src/Memery/bin/{configuration}/netcoreapp2.0/*.*");
+	var files = GetFiles($"./src/Memery/bin/{configuration}/{framework}/*.*");
 	CopyFiles(files, frameworkDir);
 	CopyFiles(GetFiles("./build/Dockerfile*"), artifacts);
 	CopyFileToDirectory("./template/openshift.yaml", artifacts);
@@ -143,8 +144,8 @@ Task("Publish-Runtime")
 		Configuration = configuration
 	};
 	DotNetCorePublish(solutionPath, settings);
-	var publishDir = $"./src/Memery/bin/{configuration}/netcoreapp2.0/{runtime}/publish/";
-	var conPublishDir = $"./src/Memery.Console/bin/{configuration}/netcoreapp2.0/{runtime}/publish/";
+	var publishDir = $"./src/Memery/bin/{configuration}/{framework}/{runtime}/publish/";
+	var conPublishDir = $"./src/Memery.Console/bin/{configuration}/{framework}/{runtime}/publish/";
 	CopyDirectory(publishDir, runtimeDir);
 	CopyDirectory(conPublishDir, consoleDir);
 	CopyFiles(GetFiles("./scripts/*.sh"), consoleDir);
@@ -196,13 +197,10 @@ Task("Build-Console-Package")
 		Rm = true,
 		User = "1000"
 	};
-	var opts = @"-s dir -a x86_64 --force
-	-m 'Alistair Chapman <alistair@agchapman.com>'
-	-n 'memery-cli'
-	--after-install /src/post-install.sh
-	--before-remove /src/pre-remove.sh";
+	var opts = "-s dir -a x86_64 -f -n memery-cli -m \"Alistair Chapman <alistair@agchapman.com>\" --after-install /src/post-install.sh --before-remove /src/pre-remove.sh";
 	Information("Starting {0} for {1} ({2})", runSettings.Name, runtime, "linux-x64");
-	DockerRun(runSettings, "tenzer/fpm", $"{opts} -v {packageVersion} -t rpm -d libunwind -d libicu /src/=/usr/lib/memery-cli/");
+	var fullCmd = $"{opts} -v {packageVersion} -t rpm -d libunwind -d libicu /src/=/usr/lib/memery-cli/";
+	DockerRun(runSettings, "tenzer/fpm", fullCmd);
 });
 
 Task("Default")
